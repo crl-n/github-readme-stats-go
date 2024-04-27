@@ -13,12 +13,23 @@ type GithubClient struct {
 	username string
 }
 
-func (ghClient GithubClient) GetUserData() {
-	resp, err := http.Get(GithubAPIBaseURL + "/users/" + ghClient.username)
-	checkError(err)
+func (ghClient GithubClient) makeRequest(url string) ([]byte, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
 
 	defer resp.Body.Close()
 	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
+}
+
+func (ghClient GithubClient) GetUserData() {
+	body, err := ghClient.makeRequest(GithubAPIBaseURL + "/users/" + ghClient.username)
 	checkError(err)
 
 	fmt.Println(string(body))
@@ -30,11 +41,7 @@ type Repo struct {
 }
 
 func (ghClient GithubClient) GetUserRepos() {
-	resp, err := http.Get(GithubAPIBaseURL + "/users/" + ghClient.username + "/repos")
-	checkError(err)
-
-	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
+	body, err := ghClient.makeRequest(GithubAPIBaseURL + "/users/" + ghClient.username + "/repos")
 	checkError(err)
 
 	var repos []Repo
