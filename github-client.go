@@ -8,10 +8,12 @@ import (
 
 const GithubAPIBaseURL = "https://api.github.com"
 
-type GithubClient struct{}
+type GithubClient struct {
+	username string
+}
 
-func (ghClient GithubClient) GetUserData(username string) {
-	resp, err := http.Get(GithubAPIBaseURL + "/users/" + username)
+func (ghClient GithubClient) GetUserData() {
+	resp, err := http.Get(GithubAPIBaseURL + "/users/" + ghClient.username)
 	if err != nil {
 		fmt.Println(err)
 		return

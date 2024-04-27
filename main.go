@@ -21,8 +21,8 @@ func main() {
 	case "svg":
 		GenerateTestSVG()
 	case "gh":
-		ghClient := GithubClient{}
-		ghClient.GetUserData("crl-n")
+		ghClient := GithubClient{"crl-n"}
+		ghClient.GetUserData()
 	default:
 		usage()
 	}
