@@ -6,9 +6,14 @@ import (
 	"net/http"
 )
 
-func Connect() {
-	resp, err := http.Get("https://api.github.com/users/crl-n")
+const GithubAPIBaseURL = "https://api.github.com"
+
+type GithubClient struct{}
+
+func (ghClient GithubClient) GetUserData(username string) {
+	resp, err := http.Get(GithubAPIBaseURL + "/users/" + username)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
 

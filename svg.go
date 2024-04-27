@@ -13,7 +13,7 @@ type SVG struct {
 	Content string   `xml:",innerxml"`
 }
 
-func TestSVG() {
+func GenerateTestSVG() {
 	svg := &SVG{
 		Width:   "100",
 		Height:  "100",

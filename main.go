@@ -19,9 +19,10 @@ func main() {
 
 	switch os.Args[1] {
 	case "svg":
-		TestSVG()
+		GenerateTestSVG()
 	case "gh":
-		Connect()
+		ghClient := GithubClient{}
+		ghClient.GetUserData("crl-n")
 	default:
 		usage()
 	}
