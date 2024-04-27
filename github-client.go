@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 )
 
 const GithubAPIBaseURL = "https://api.github.com"
@@ -35,20 +36,48 @@ func (ghClient GithubClient) GetUserData() {
 	fmt.Println(string(body))
 }
 
-type Repo struct {
+type RepoAPIResponse struct {
 	Name         string `json:"name"`
 	LanguagesUrl string `json:"languages_url"`
 }
 
-func (ghClient GithubClient) GetUserRepos() {
+type LanguageAPIResponse map[string]int
+
+type Repo struct {
+	Name      string
+	Languages map[string]int
+}
+
+func (ghClient GithubClient) GetUserRepos() []Repo {
 	body, err := ghClient.makeRequest(GithubAPIBaseURL + "/users/" + ghClient.username + "/repos")
 	checkError(err)
 
-	var repos []Repo
-	err = json.Unmarshal(body, &repos)
+	var rawRepos []RepoAPIResponse
+	err = json.Unmarshal(body, &rawRepos)
 	checkError(err)
 
-	for _, repo := range repos {
-		fmt.Println(repo)
+	var repos []Repo
+	for _, rawRepo := range rawRepos {
+		body, err := ghClient.makeRequest(rawRepo.LanguagesUrl)
+		checkError(err)
+
+		var languages LanguageAPIResponse
+		err = json.Unmarshal(body, &languages)
+		if err != nil {
+			fmt.Println(err)
+			fmt.Println(body)
+			os.Exit(1)
+		}
+
+		repo := Repo{rawRepo.Name, languages}
+		repos = append(repos, repo)
 	}
+
+	return repos
+}
+
+func (ghClient GithubClient) GetLanguageStats() {
+	repos := ghClient.GetUserRepos()
+
+	fmt.Println(repos)
 }
