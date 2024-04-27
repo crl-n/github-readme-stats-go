@@ -23,6 +23,7 @@ func main() {
 	case "gh":
 		ghClient := GithubClient{"crl-n"}
 		ghClient.GetUserData()
+		ghClient.GetUserRepos()
 	default:
 		usage()
 	}
