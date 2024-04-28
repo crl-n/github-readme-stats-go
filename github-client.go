@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"time"
 )
 
 const GithubAPIBaseURL = "https://api.github.com"
@@ -39,6 +40,27 @@ func (ghClient GithubClient) GetUserData() {
 type RepoAPIResponse struct {
 	Name         string `json:"name"`
 	LanguagesUrl string `json:"languages_url"`
+	PushedAt     string `json:"pushed_at"`
+}
+
+func (rawRepo RepoAPIResponse) ToRepo(ghClient GithubClient) (Repo, error) {
+	body, err := ghClient.makeRequest(rawRepo.LanguagesUrl)
+	checkError(err)
+
+	var languages LanguageAPIResponse
+	err = json.Unmarshal(body, &languages)
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println(body)
+		os.Exit(1)
+	}
+
+	pushedAtTime, err := time.Parse(time.RFC3339, rawRepo.PushedAt)
+	checkError(err)
+
+	repo := Repo{rawRepo.Name, languages, pushedAtTime}
+
+	return repo, nil
 }
 
 type LanguageAPIResponse map[string]int
@@ -46,6 +68,7 @@ type LanguageAPIResponse map[string]int
 type Repo struct {
 	Name      string
 	Languages map[string]int
+	PushedAt  time.Time
 }
 
 func (ghClient GithubClient) GetUserRepos() []Repo {
@@ -58,18 +81,8 @@ func (ghClient GithubClient) GetUserRepos() []Repo {
 
 	var repos []Repo
 	for _, rawRepo := range rawRepos {
-		body, err := ghClient.makeRequest(rawRepo.LanguagesUrl)
+		repo, err := rawRepo.ToRepo(ghClient)
 		checkError(err)
-
-		var languages LanguageAPIResponse
-		err = json.Unmarshal(body, &languages)
-		if err != nil {
-			fmt.Println(err)
-			fmt.Println(body)
-			os.Exit(1)
-		}
-
-		repo := Repo{rawRepo.Name, languages}
 		repos = append(repos, repo)
 	}
 
