@@ -22,7 +22,6 @@ func main() {
 		GenerateTestSVG()
 	case "gh":
 		ghClient := GithubClient{"crl-n"}
-		ghClient.GetUserData()
 		ghClient.GetLanguageStats()
 	default:
 		usage()

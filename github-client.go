@@ -30,13 +30,6 @@ func (ghClient GithubClient) makeRequest(url string) ([]byte, error) {
 	return body, nil
 }
 
-func (ghClient GithubClient) GetUserData() {
-	body, err := ghClient.makeRequest(GithubAPIBaseURL + "/users/" + ghClient.username)
-	checkError(err)
-
-	fmt.Println(string(body))
-}
-
 type RepoAPIResponse struct {
 	Name         string `json:"name"`
 	LanguagesUrl string `json:"languages_url"`
