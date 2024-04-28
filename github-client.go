@@ -46,18 +46,20 @@ type Repo struct {
 
 func (rawRepo RepoAPIResponse) ToRepo(ghClient GithubClient) (Repo, error) {
 	body, err := ghClient.makeRequest(rawRepo.LanguagesUrl)
-	checkError(err)
+	if err != nil {
+		return Repo{}, err
+	}
 
 	var languages LanguageAPIResponse
 	err = json.Unmarshal(body, &languages)
 	if err != nil {
-		fmt.Println(err)
-		fmt.Println(body)
-		os.Exit(1)
+		return Repo{}, err
 	}
 
 	pushedAtTime, err := time.Parse(time.RFC3339, rawRepo.PushedAt)
-	checkError(err)
+	if err != nil {
+		return Repo{}, err
+	}
 
 	repo := Repo{rawRepo.Name, languages, pushedAtTime}
 
@@ -110,20 +112,27 @@ func findRepo(repos []Repo, target RepoAPIResponse) (*Repo, bool) {
 	return nil, false
 }
 
-func (ghClient GithubClient) GetUserRepos() []Repo {
+func (ghClient GithubClient) GetUserRepos() ([]Repo, error) {
 	body, err := ghClient.makeRequest(GithubAPIBaseURL + "/users/" + ghClient.username + "/repos")
-	checkError(err)
+	if err != nil {
+		return nil, err
+	}
 
 	var rawRepos []RepoAPIResponse
 	err = json.Unmarshal(body, &rawRepos)
-	checkError(err)
+	if err != nil {
+		return nil, err
+	}
 
 	var repos []Repo
 	cachedRepos := RetrieveCachedRepos()
 
 	for _, rawRepo := range rawRepos {
 		rawRepoPushedAtTime, err := time.Parse(time.RFC3339, rawRepo.PushedAt)
-		checkError(err)
+		if err != nil {
+			return nil, err
+		}
+
 		cachedRepo, found := findRepo(cachedRepos, rawRepo)
 
 		if found && cachedRepo.PushedAt.Equal(rawRepoPushedAtTime) {
@@ -132,18 +141,23 @@ func (ghClient GithubClient) GetUserRepos() []Repo {
 		} else {
 			fmt.Printf("Using new repo data for %v\n", rawRepo.Name)
 			repo, err := rawRepo.ToRepo(ghClient)
-			checkError(err)
+			if err != nil {
+				return nil, err
+			}
 			repos = append(repos, repo)
 		}
 	}
 
 	CacheRepos(repos)
 
-	return repos
+	return repos, nil
 }
 
 func (ghClient GithubClient) GetLanguageStats() {
-	repos := ghClient.GetUserRepos()
+	repos, err := ghClient.GetUserRepos()
+	if err != nil {
+		return
+	}
 
 	fmt.Println(repos)
 }
