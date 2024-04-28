@@ -20,7 +20,8 @@
 # Go workspace file
 go.work
 
-# Demo SVG file
+# Temporary files used by the application
+cached_repos.json
 test.svg
 
 # Output binary

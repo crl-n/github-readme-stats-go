@@ -43,6 +43,14 @@ type RepoAPIResponse struct {
 	PushedAt     string `json:"pushed_at"`
 }
 
+type LanguageAPIResponse map[string]int
+
+type Repo struct {
+	Name      string
+	Languages map[string]int
+	PushedAt  time.Time
+}
+
 func (rawRepo RepoAPIResponse) ToRepo(ghClient GithubClient) (Repo, error) {
 	body, err := ghClient.makeRequest(rawRepo.LanguagesUrl)
 	checkError(err)
@@ -63,12 +71,50 @@ func (rawRepo RepoAPIResponse) ToRepo(ghClient GithubClient) (Repo, error) {
 	return repo, nil
 }
 
-type LanguageAPIResponse map[string]int
+const repoCacheFilename = "cached_repos.json"
 
-type Repo struct {
-	Name      string
-	Languages map[string]int
-	PushedAt  time.Time
+func CacheRepos(repos []Repo) {
+	file, err := os.Create(repoCacheFilename)
+	if err != nil {
+		fmt.Println("Unable to create " + repoCacheFilename)
+		return
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(repos)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func RetrieveCachedRepos() []Repo {
+	file, err := os.Open(repoCacheFilename)
+	if err != nil {
+		fmt.Println("Unable to open " + repoCacheFilename)
+		return nil
+	}
+
+	var repos []Repo
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&repos)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+
+	return repos
+}
+
+func findRepo(repos []Repo, target RepoAPIResponse) (*Repo, bool) {
+	for _, repo := range repos {
+		if repo.Name == target.Name {
+			fmt.Printf("Cache hit for %v\n", target.Name)
+			return &repo, true
+		}
+	}
+	fmt.Printf("Cache miss for %v\n", target.Name)
+	return nil, false
 }
 
 func (ghClient GithubClient) GetUserRepos() []Repo {
@@ -80,11 +126,25 @@ func (ghClient GithubClient) GetUserRepos() []Repo {
 	checkError(err)
 
 	var repos []Repo
+	cachedRepos := RetrieveCachedRepos()
+
 	for _, rawRepo := range rawRepos {
-		repo, err := rawRepo.ToRepo(ghClient)
+		rawRepoPushedAtTime, err := time.Parse(time.RFC3339, rawRepo.PushedAt)
 		checkError(err)
-		repos = append(repos, repo)
+		cachedRepo, found := findRepo(cachedRepos, rawRepo)
+
+		if found && cachedRepo.PushedAt.Equal(rawRepoPushedAtTime) {
+			fmt.Printf("Using cached repo data for %v\n", rawRepo.Name)
+			repos = append(repos, *cachedRepo)
+		} else {
+			fmt.Printf("Using new repo data for %v\n", rawRepo.Name)
+			repo, err := rawRepo.ToRepo(ghClient)
+			checkError(err)
+			repos = append(repos, repo)
+		}
 	}
+
+	CacheRepos(repos)
 
 	return repos
 }
