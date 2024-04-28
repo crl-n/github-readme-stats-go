@@ -106,16 +106,6 @@ func (ghClient GithubClient) GetUserRepos() ([]Repo, error) {
 	return repos, nil
 }
 
-func combineRepoLanguageStats(repos []Repo) map[string]int {
-	langStats := make(map[string]int)
-	for _, repo := range repos {
-		for key, value := range repo.Languages {
-			langStats[key] += value
-		}
-	}
-	return langStats
-}
-
 func (ghClient GithubClient) GetLanguageStats() {
 	repos, err := ghClient.GetUserRepos()
 	if err != nil {
