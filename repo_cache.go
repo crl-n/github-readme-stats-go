@@ -44,10 +44,10 @@ func RetrieveCachedRepos() []Repo {
 func findRepo(repos []Repo, target RepoAPIResponse) (*Repo, bool) {
 	for _, repo := range repos {
 		if repo.Name == target.Name {
-			fmt.Printf("Cache hit for %v\n", target.Name)
+			logger.Debugf("Cache hit for %v\n", target.Name)
 			return &repo, true
 		}
 	}
-	fmt.Printf("Cache miss for %v\n", target.Name)
+	logger.Debugf("Cache miss for %v\n", target.Name)
 	return nil, false
 }

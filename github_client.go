@@ -89,10 +89,10 @@ func (ghClient GithubClient) GetUserRepos() ([]Repo, error) {
 		cachedRepo, found := findRepo(cachedRepos, rawRepo)
 
 		if found && cachedRepo.PushedAt.Equal(rawRepoPushedAtTime) {
-			fmt.Printf("Using cached repo data for %v\n", rawRepo.Name)
+			logger.Debugf("Using cached repo data for %v\n", rawRepo.Name)
 			repos = append(repos, *cachedRepo)
 		} else {
-			fmt.Printf("Using new repo data for %v\n", rawRepo.Name)
+			logger.Debugf("Using new repo data for %v\n", rawRepo.Name)
 			repo, err := rawRepo.ToRepo(ghClient)
 			if err != nil {
 				return nil, err
