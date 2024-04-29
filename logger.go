@@ -25,9 +25,9 @@ func newLogger() *Logger {
 	case "DEBUG":
 		level = LogLevelDebug
 	case "INFO":
-		level = LogLevelDebug
+		level = LogLevelInfo
 	case "ERROR":
-		level = LogLevelDebug
+		level = LogLevelError
 	default:
 		level = LogLevelInfo
 	}
