@@ -45,3 +45,9 @@ func (l *Logger) Debugf(format string, args ...interface{}) {
 		fmt.Printf(format, args...)
 	}
 }
+
+func (l *Logger) Errorf(format string, args ...interface{}) {
+	if l.LogLevel <= LogLevelError {
+		fmt.Printf(format, args...)
+	}
+}
