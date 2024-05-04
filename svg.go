@@ -30,6 +30,13 @@ type Circle struct {
 	Fill        string   `xml:"fill,attr"`
 }
 
+type Text struct {
+	XMLName xml.Name `xml:"text"`
+	X       string   `xml:"x,attr"`
+	Y       string   `xml:"y,attr"`
+	Content string   `xml:",innerxml"`
+}
+
 func GenerateTestSVG() {
 	svg := &SVG{
 		Width:  "100",
@@ -42,6 +49,11 @@ func GenerateTestSVG() {
 			},
 			Circle{
 				Cx: "50", Cy: "50", R: "40", Stroke: "green", StrokeWidth: "4", Fill: "yellow",
+			},
+			Text{
+				X:       "10",
+				Y:       "50",
+				Content: "Hello, world",
 			},
 		},
 	}
