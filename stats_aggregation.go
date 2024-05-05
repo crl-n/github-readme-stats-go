@@ -1,5 +1,7 @@
 package main
 
+import "sort"
+
 // LanguageStat represents statistics for a programming language in a user's repositories.
 // BytesOfCode is the number of bytes of code written in the language.
 // Percentage is the percentage of all bytes of code that are written in the language.
@@ -9,7 +11,16 @@ type LanguageStat struct {
 	Percentage  float32
 }
 
-func combineRepoLanguageStats(repos []Repo) []LanguageStat {
+type LanguageStats []LanguageStat
+
+func (stats LanguageStats) Top(n int) []LanguageStat {
+	sort.Slice(stats, func(i, j int) bool {
+		return stats[i].Percentage > stats[j].Percentage
+	})
+	return stats[:n]
+}
+
+func combineRepoLanguageStats(repos []Repo) LanguageStats {
 	langStats := make(map[string]LanguageStat)
 
 	// Aggregate bytes of code values, keep track of total
