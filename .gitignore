@@ -23,6 +23,7 @@ go.work
 # Temporary files used by the application
 cached_repos.json
 test.svg
+langs.svg
 
 # Output binary
 github-readme-stats-go
