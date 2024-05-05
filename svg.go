@@ -12,6 +12,24 @@ type SVG struct {
 	Elements []interface{} `xml:",innerxml"`
 }
 
+func (svg SVG) WriteToFile(filename string) {
+	output, err := xml.MarshalIndent(svg, "", " ")
+	if err != nil {
+		logger.Errorf("error: %v\n", err)
+	}
+
+	file, err := os.Create(filename)
+	if err != nil {
+		logger.Errorf("error: %v\n", err)
+	}
+	defer file.Close()
+
+	_, err = file.WriteString(string(output))
+	if err != nil {
+		logger.Errorf("error: %v\n", err)
+	}
+}
+
 type Rect struct {
 	XMLName xml.Name `xml:"rect"`
 	Width   string   `xml:"width,attr"`
@@ -56,20 +74,5 @@ func GenerateTestSVG() {
 			},
 		},
 	}
-
-	output, err := xml.MarshalIndent(svg, "", " ")
-	if err != nil {
-		logger.Errorf("error: %v\n", err)
-	}
-
-	file, err := os.Create("test.svg")
-	if err != nil {
-		logger.Errorf("error: %v\n", err)
-	}
-	defer file.Close()
-
-	_, err = file.WriteString(string(output))
-	if err != nil {
-		logger.Errorf("error: %v\n", err)
-	}
+	svg.WriteToFile("test.svg")
 }
