@@ -112,7 +112,7 @@ func (ghClient GithubClient) GetLanguageStats() []LanguageStat {
 		return nil
 	}
 
-	languageStats := combineRepoLanguageStats(repos)
+	languageStats := NewLanguageStats(repos)
 
 	for _, stat := range languageStats {
 		fmt.Println(stat.Language, stat.BytesOfCode, stat.Percentage)

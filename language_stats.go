@@ -20,7 +20,7 @@ func (stats LanguageStats) Top(n int) []LanguageStat {
 	return stats[:n]
 }
 
-func combineRepoLanguageStats(repos []Repo) LanguageStats {
+func NewLanguageStats(repos []Repo) LanguageStats {
 	langStats := make(map[string]LanguageStat)
 
 	// Aggregate bytes of code values, keep track of total
