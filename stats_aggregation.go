@@ -4,11 +4,12 @@ package main
 // BytesOfCode is the number of bytes of code written in the language.
 // Percentage is the percentage of all bytes of code that are written in the language.
 type LanguageStat struct {
+	Language    string
 	BytesOfCode int
 	Percentage  float32
 }
 
-func combineRepoLanguageStats(repos []Repo) map[string]LanguageStat {
+func combineRepoLanguageStats(repos []Repo) []LanguageStat {
 	langStats := make(map[string]LanguageStat)
 
 	// Aggregate bytes of code values, keep track of total
@@ -20,12 +21,19 @@ func combineRepoLanguageStats(repos []Repo) map[string]LanguageStat {
 		}
 	}
 
-	// Count percentages
+	// Count percentages and add language names
 	for key := range langStats {
 		langStat := langStats[key]
+		langStat.Language = key
 		langStat.Percentage = float32(langStat.BytesOfCode) / float32(totalBytes) * 100.0
 		langStats[key] = langStat
 	}
 
-	return langStats
+	// Turn map of lang stats into slice of lang stats
+	langStatsSlice := make([]LanguageStat, len(repos))
+	for key := range langStats {
+		langStatsSlice = append(langStatsSlice, langStats[key])
+	}
+
+	return langStatsSlice
 }
