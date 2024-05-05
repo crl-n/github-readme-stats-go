@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/xml"
-	"fmt"
 	"os"
 )
 
@@ -60,17 +59,17 @@ func GenerateTestSVG() {
 
 	output, err := xml.MarshalIndent(svg, "", " ")
 	if err != nil {
-		fmt.Printf("error: %v\n", err)
+		logger.Errorf("error: %v\n", err)
 	}
 
 	file, err := os.Create("test.svg")
 	if err != nil {
-		fmt.Printf("error: %v\n", err)
+		logger.Errorf("error: %v\n", err)
 	}
 	defer file.Close()
 
 	_, err = file.WriteString(string(output))
 	if err != nil {
-		fmt.Printf("error: %v\n", err)
+		logger.Errorf("error: %v\n", err)
 	}
 }
