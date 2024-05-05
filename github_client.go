@@ -106,10 +106,10 @@ func (ghClient GithubClient) GetUserRepos() ([]Repo, error) {
 	return repos, nil
 }
 
-func (ghClient GithubClient) GetLanguageStats() {
+func (ghClient GithubClient) GetLanguageStats() []LanguageStat {
 	repos, err := ghClient.GetUserRepos()
 	if err != nil {
-		return
+		return nil
 	}
 
 	languageStats := combineRepoLanguageStats(repos)
@@ -117,4 +117,6 @@ func (ghClient GithubClient) GetLanguageStats() {
 	for _, stat := range languageStats {
 		fmt.Println(stat.Language, stat.BytesOfCode, stat.Percentage)
 	}
+
+	return languageStats
 }

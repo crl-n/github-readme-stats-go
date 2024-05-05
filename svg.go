@@ -54,6 +54,11 @@ type Text struct {
 	Content string   `xml:",innerxml"`
 }
 
+type Style struct {
+	XMLName xml.Name `xml:"style"`
+	Content string   `xml:",innerxml"`
+}
+
 func GenerateTestSVG() {
 	svg := &SVG{
 		Width:  "100",

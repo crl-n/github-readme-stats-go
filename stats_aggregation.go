@@ -30,7 +30,7 @@ func combineRepoLanguageStats(repos []Repo) []LanguageStat {
 	}
 
 	// Turn map of lang stats into slice of lang stats
-	langStatsSlice := make([]LanguageStat, len(repos))
+	langStatsSlice := make([]LanguageStat, 0)
 	for key := range langStats {
 		langStatsSlice = append(langStatsSlice, langStats[key])
 	}
