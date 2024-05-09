@@ -3,12 +3,14 @@ package main
 import (
 	"fmt"
 	"strconv"
+
+	"github.com/crl-n/github-readme-stats-go/stats"
 )
 
 type SVGGenerator struct{}
 
-func (gen *SVGGenerator) GenerateLangStatsCard(stats LanguageStats) {
-	topLangs := stats.Top(6)
+func (gen *SVGGenerator) GenerateLangStatsCard(langStats stats.LanguageStats) {
+	topLangs := langStats.Top(6)
 
 	svg := &SVG{
 		Width:  "300",

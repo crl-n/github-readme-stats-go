@@ -6,6 +6,7 @@ import (
 
 	"github.com/crl-n/github-readme-stats-go/githubclient"
 	"github.com/crl-n/github-readme-stats-go/logger"
+	"github.com/crl-n/github-readme-stats-go/stats"
 )
 
 func usage() {
@@ -33,7 +34,7 @@ func main() {
 			return
 		}
 
-		languageStats := NewLanguageStats(repos)
+		languageStats := stats.NewLanguageStats(repos)
 
 		for _, stat := range languageStats {
 			logger.Infof("%v %v %v\n", stat.Language, stat.BytesOfCode, stat.Percentage)
