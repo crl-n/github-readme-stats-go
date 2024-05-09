@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -106,19 +105,4 @@ func (ghClient GithubClient) GetUserRepos() ([]Repo, error) {
 	CacheRepos(repos)
 
 	return repos, nil
-}
-
-func (ghClient GithubClient) GetLanguageStats() []LanguageStat {
-	repos, err := ghClient.GetUserRepos()
-	if err != nil {
-		return nil
-	}
-
-	languageStats := NewLanguageStats(repos)
-
-	for _, stat := range languageStats {
-		fmt.Println(stat.Language, stat.BytesOfCode, stat.Percentage)
-	}
-
-	return languageStats
 }
