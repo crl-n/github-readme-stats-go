@@ -32,11 +32,18 @@ func (svg SVG) WriteToFile(filename string) {
 	}
 }
 
+type Group struct {
+	XMLName  xml.Name      `xml:"g"`
+	Elements []interface{} `xml:",innerxml"`
+}
+
 type Rect struct {
 	XMLName xml.Name `xml:"rect"`
 	Width   string   `xml:"width,attr"`
 	Height  string   `xml:"height,attr"`
 	Fill    string   `xml:"fill,attr"`
+	Rx      string   `xml:"rx,attr"`
+	Ry      string   `xml:"ry,attr"`
 }
 
 type Circle struct {
