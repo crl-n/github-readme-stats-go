@@ -7,6 +7,7 @@ import (
 	"github.com/crl-n/github-readme-stats-go/githubclient"
 	"github.com/crl-n/github-readme-stats-go/logger"
 	"github.com/crl-n/github-readme-stats-go/stats"
+	"github.com/crl-n/github-readme-stats-go/svg"
 )
 
 func usage() {
@@ -26,7 +27,7 @@ func main() {
 
 	switch os.Args[1] {
 	case "lang":
-		gen := SVGGenerator{}
+		gen := svg.SVGGenerator{}
 
 		repos, err := client.GetUserRepos()
 		if err != nil {
@@ -42,7 +43,7 @@ func main() {
 
 		gen.GenerateLangStatsCard(languageStats)
 	case "svg":
-		GenerateTestSVG()
+		svg.GenerateTestSVG()
 	case "gh":
 		repos, err := client.GetUserRepos()
 		if err != nil {
