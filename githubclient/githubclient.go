@@ -1,4 +1,4 @@
-package main
+package githubclient
 
 import (
 	"encoding/json"
@@ -13,6 +13,10 @@ const GithubAPIBaseURL = "https://api.github.com"
 
 type GithubClient struct {
 	username string
+}
+
+func New(username string) GithubClient {
+	return GithubClient{username}
 }
 
 func (ghClient GithubClient) makeRequest(url string) ([]byte, error) {

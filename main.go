@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/crl-n/github-readme-stats-go/githubclient"
 	"github.com/crl-n/github-readme-stats-go/logger"
 )
 
@@ -20,13 +21,13 @@ func main() {
 		return
 	}
 
-	ghClient := GithubClient{"crl-n"}
+	client := githubclient.New("crl-n")
 
 	switch os.Args[1] {
 	case "lang":
 		gen := SVGGenerator{}
 
-		repos, err := ghClient.GetUserRepos()
+		repos, err := client.GetUserRepos()
 		if err != nil {
 			logger.Errorf("Error encountered while retrieving repositories: %v\n", err)
 			return
@@ -42,7 +43,7 @@ func main() {
 	case "svg":
 		GenerateTestSVG()
 	case "gh":
-		repos, err := ghClient.GetUserRepos()
+		repos, err := client.GetUserRepos()
 		if err != nil {
 			logger.Errorf("Error encountered while retrieving repositories: %v\n", err)
 			return

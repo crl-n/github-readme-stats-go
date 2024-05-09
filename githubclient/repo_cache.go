@@ -1,4 +1,4 @@
-package main
+package githubclient
 
 import (
 	"encoding/json"
