@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/crl-n/github-readme-stats-go/logger"
 )
 
 const repoCacheFilename = "cached_repos.json"

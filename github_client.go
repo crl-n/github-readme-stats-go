@@ -6,6 +6,8 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/crl-n/github-readme-stats-go/logger"
 )
 
 const GithubAPIBaseURL = "https://api.github.com"

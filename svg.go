@@ -3,6 +3,8 @@ package main
 import (
 	"encoding/xml"
 	"os"
+
+	"github.com/crl-n/github-readme-stats-go/logger"
 )
 
 type SVG struct {

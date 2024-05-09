@@ -1,4 +1,4 @@
-package main
+package logger
 
 import (
 	"fmt"
@@ -13,14 +13,11 @@ const (
 	LogLevelError
 )
 
-type Logger struct {
-	LogLevel
-}
+var level LogLevel
 
-func newLogger() *Logger {
+func init() {
 	envLogLevel := os.Getenv("LOG_LEVEL")
 
-	var level LogLevel
 	switch envLogLevel {
 	case "DEBUG":
 		level = LogLevelDebug
@@ -31,23 +28,16 @@ func newLogger() *Logger {
 	default:
 		level = LogLevelInfo
 	}
-
-	return &Logger{
-		LogLevel: level,
-	}
 }
 
-// Create global logger
-var logger = newLogger()
-
-func (l *Logger) Debugf(format string, args ...interface{}) {
-	if l.LogLevel <= LogLevelDebug {
+func Debugf(format string, args ...interface{}) {
+	if level <= LogLevelDebug {
 		fmt.Printf(format, args...)
 	}
 }
 
-func (l *Logger) Errorf(format string, args ...interface{}) {
-	if l.LogLevel <= LogLevelError {
+func Errorf(format string, args ...interface{}) {
+	if level <= LogLevelError {
 		fmt.Printf(format, args...)
 	}
 }
