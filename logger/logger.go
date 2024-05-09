@@ -36,6 +36,12 @@ func Debugf(format string, args ...interface{}) {
 	}
 }
 
+func Infof(format string, args ...interface{}) {
+	if level <= LogLevelInfo {
+		fmt.Printf(format, args...)
+	}
+}
+
 func Errorf(format string, args ...interface{}) {
 	if level <= LogLevelError {
 		fmt.Printf(format, args...)
