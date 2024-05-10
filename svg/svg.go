@@ -44,6 +44,7 @@ type Rect struct {
 	Fill    string   `xml:"fill,attr"`
 	Rx      string   `xml:"rx,attr"`
 	Ry      string   `xml:"ry,attr"`
+	Stroke  string   `xml:"stroke,attr"`
 }
 
 type Circle struct {
