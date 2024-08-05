@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/crl-n/github-readme-stats-go/githubclient"
+	"github.com/crl-n/github-readme-stats-go/github"
 	"github.com/crl-n/github-readme-stats-go/logger"
 	"github.com/crl-n/github-readme-stats-go/stats"
 	"github.com/crl-n/github-readme-stats-go/svg"
@@ -52,13 +52,13 @@ func main() {
 	}
 
 	githubHandle := getHandle()
-	client := githubclient.New(githubHandle)
+	service := github.NewGithubService(githubHandle)
 
 	switch os.Args[1] {
 	case "lang":
 		gen := svg.SVGGenerator{}
 
-		repos, err := client.GetPublicReposWithLanguages()
+		repos, err := service.GetPublicReposWithLanguages()
 		if err != nil {
 			logger.Errorf("Error encountered while retrieving repositories: %v\n", err)
 			return
@@ -72,7 +72,7 @@ func main() {
 
 		gen.GenerateLangStatsCard(languageStats)
 	case "gh":
-		repos, err := client.GetPublicReposWithLanguages()
+		repos, err := service.GetPublicReposWithLanguages()
 		if err != nil {
 			logger.Errorf("Error encountered while retrieving repositories: %v\n", err)
 			return

@@ -1,4 +1,4 @@
-package githubclient
+package github
 
 import (
 	"encoding/json"
@@ -6,8 +6,6 @@ import (
 	"io"
 	"net/http"
 	"time"
-
-	"github.com/crl-n/github-readme-stats-go/logger"
 )
 
 const GithubAPIBaseURL = "https://api.github.com"
@@ -16,7 +14,7 @@ type GithubClient struct {
 	username string
 }
 
-func New(username string) GithubClient {
+func NewGithubClient(username string) GithubClient {
 	return GithubClient{username}
 }
 
@@ -112,41 +110,4 @@ func (ghClient GithubClient) GetPublicReposList() ([]RawPublicRepo, error) {
 	}
 
 	return rawPublicRepos, nil
-}
-
-// Fetches list of public repositories and enriches with language data for each
-// repository.
-func (ghClient GithubClient) GetPublicReposWithLanguages() ([]Repo, error) {
-	rawRepos, err := ghClient.GetPublicReposList()
-	if err != nil {
-		return nil, err
-	}
-
-	var repos []Repo
-	cachedRepos := RetrieveCachedRepos()
-
-	for _, rawRepo := range rawRepos {
-		rawRepoPushedAtTime, err := time.Parse(time.RFC3339, rawRepo.PushedAt)
-		if err != nil {
-			return nil, err
-		}
-
-		cachedRepo, found := findRepo(cachedRepos, rawRepo)
-
-		if found && cachedRepo.PushedAt.Equal(rawRepoPushedAtTime) {
-			logger.Debugf("Cache hit for '%v', using cached repo data\n", rawRepo.Name)
-			repos = append(repos, *cachedRepo)
-		} else {
-			logger.Debugf("Cache miss for '%v', fetching language data\n", rawRepo.Name)
-			repo, err := rawRepo.ToRepo(ghClient)
-			if err != nil {
-				return nil, err
-			}
-			repos = append(repos, repo)
-		}
-	}
-
-	CacheRepos(repos)
-
-	return repos, nil
 }

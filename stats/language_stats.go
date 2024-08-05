@@ -3,7 +3,7 @@ package stats
 import (
 	"sort"
 
-	"github.com/crl-n/github-readme-stats-go/githubclient"
+	"github.com/crl-n/github-readme-stats-go/github"
 )
 
 // LanguageStat represents statistics for a programming language in a user's repositories.
@@ -24,7 +24,7 @@ func (stats LanguageStats) Top(n int) []LanguageStat {
 	return stats[:n]
 }
 
-func NewLanguageStats(repos []githubclient.Repo) LanguageStats {
+func NewLanguageStats(repos []github.Repo) LanguageStats {
 	langStats := make(map[string]LanguageStat)
 
 	// Aggregate bytes of code values, keep track of total
