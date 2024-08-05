@@ -20,8 +20,8 @@ func New(username string) GithubClient {
 	return GithubClient{username}
 }
 
-func (ghClient GithubClient) makeRequest(url string) ([]byte, error) {
-	resp, err := http.Get(url)
+func (ghClient GithubClient) makeRequest(urlPath string) ([]byte, error) {
+	resp, err := http.Get(GithubAPIBaseURL + urlPath)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (ghClient GithubClient) makeRequest(url string) ([]byte, error) {
 		return nil, fmt.Errorf(
 			fmt.Sprintf(
 				"Request by GithubClient to '%s' failed with status %s",
-				url,
+				urlPath,
 				resp.Status,
 			),
 		)
@@ -82,7 +82,7 @@ func (rawRepo RawPublicRepo) ToRepo(ghClient GithubClient) (Repo, error) {
 // https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repository-languages
 func (ghClient GithubClient) GetRepoLanguages(repo string) (RepoLanguages, error) {
 	body, err := ghClient.makeRequest(
-		GithubAPIBaseURL + "/repos/" + ghClient.username + "/" + repo + "/languages",
+		"/repos/" + ghClient.username + "/" + repo + "/languages",
 	)
 	if err != nil {
 		return RepoLanguages{}, err
@@ -100,7 +100,7 @@ func (ghClient GithubClient) GetRepoLanguages(repo string) (RepoLanguages, error
 // Fetches list of public repositories for a user.
 // See: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-a-user
 func (ghClient GithubClient) GetPublicReposList() ([]RawPublicRepo, error) {
-	body, err := ghClient.makeRequest(GithubAPIBaseURL + "/users/" + ghClient.username + "/repos")
+	body, err := ghClient.makeRequest("/users/" + ghClient.username + "/repos")
 	if err != nil {
 		return nil, err
 	}
