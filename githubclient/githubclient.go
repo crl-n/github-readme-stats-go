@@ -70,14 +70,28 @@ func (rawRepo RepoAPIResponse) ToRepo(ghClient GithubClient) (Repo, error) {
 	return repo, nil
 }
 
-func (ghClient GithubClient) GetUserRepos() ([]Repo, error) {
+// Fetches list of public repositories for a user.
+// See: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-a-user
+func (ghClient GithubClient) GetPublicReposList() ([]RepoAPIResponse, error) {
 	body, err := ghClient.makeRequest(GithubAPIBaseURL + "/users/" + ghClient.username + "/repos")
 	if err != nil {
 		return nil, err
 	}
 
-	var rawRepos []RepoAPIResponse
-	err = json.Unmarshal(body, &rawRepos)
+	var rawPublicRepos []RepoAPIResponse
+	err = json.Unmarshal(body, &rawPublicRepos)
+	if err != nil {
+		return nil, err
+	}
+
+	return rawPublicRepos, nil
+}
+
+// Fetches list of public repositories and enriches with language data for each
+// repository. See:
+// https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repository-languages
+func (ghClient GithubClient) GetPublicReposWithLanguages() ([]Repo, error) {
+	rawRepos, err := ghClient.GetPublicReposList()
 	if err != nil {
 		return nil, err
 	}
