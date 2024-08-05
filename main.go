@@ -12,7 +12,6 @@ import (
 
 func usage() {
 	fmt.Println("Usage:")
-	fmt.Println(os.Args[0] + " svg\t\tGenerate demo svg file")
 	fmt.Println(os.Args[0] + " gh\t\tGet and display Github stats")
 	fmt.Println(os.Args[0] + " lang\t\tGenerate most used languages card")
 }
@@ -42,8 +41,6 @@ func main() {
 		}
 
 		gen.GenerateLangStatsCard(languageStats)
-	case "svg":
-		svg.GenerateTestSVG()
 	case "gh":
 		repos, err := client.GetUserRepos()
 		if err != nil {

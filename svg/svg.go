@@ -68,26 +68,3 @@ type Style struct {
 	XMLName xml.Name `xml:"style"`
 	Content string   `xml:",innerxml"`
 }
-
-func GenerateTestSVG() {
-	svg := &SVG{
-		Width:  "100",
-		Height: "100",
-		Elements: []interface{}{
-			Rect{
-				Width:  "100",
-				Height: "100",
-				Fill:   "red",
-			},
-			Circle{
-				Cx: "50", Cy: "50", R: "40", Stroke: "green", StrokeWidth: "4", Fill: "yellow",
-			},
-			Text{
-				X:       "10",
-				Y:       "50",
-				Content: "Hello, world",
-			},
-		},
-	}
-	svg.WriteToFile("test.svg")
-}
