@@ -45,28 +45,25 @@ func (ghClient GithubClient) makeRequest(url string) ([]byte, error) {
 	return body, nil
 }
 
-type RepoAPIResponse struct {
+// Raw public repository as serialized from JSON response from Github API
+type RawPublicRepo struct {
 	Name         string `json:"name"`
 	LanguagesUrl string `json:"languages_url"`
 	PushedAt     string `json:"pushed_at"`
 }
 
-type LanguageAPIResponse map[string]int
+// Keys are language names, values are number of bytes of code written
+type RepoLanguages map[string]int
 
+// Processed repository enriched with language data
 type Repo struct {
 	Name      string
 	Languages map[string]int
 	PushedAt  time.Time
 }
 
-func (rawRepo RepoAPIResponse) ToRepo(ghClient GithubClient) (Repo, error) {
-	body, err := ghClient.makeRequest(rawRepo.LanguagesUrl)
-	if err != nil {
-		return Repo{}, err
-	}
-
-	var languages LanguageAPIResponse
-	err = json.Unmarshal(body, &languages)
+func (rawRepo RawPublicRepo) ToRepo(ghClient GithubClient) (Repo, error) {
+	repoLanguages, err := ghClient.GetRepoLanguages(rawRepo.Name)
 	if err != nil {
 		return Repo{}, err
 	}
@@ -76,20 +73,39 @@ func (rawRepo RepoAPIResponse) ToRepo(ghClient GithubClient) (Repo, error) {
 		return Repo{}, err
 	}
 
-	repo := Repo{rawRepo.Name, languages, pushedAtTime}
+	repo := Repo{rawRepo.Name, repoLanguages, pushedAtTime}
 
 	return repo, nil
 }
 
+// Fetches languages used in a repository. See:
+// https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repository-languages
+func (ghClient GithubClient) GetRepoLanguages(repo string) (RepoLanguages, error) {
+	body, err := ghClient.makeRequest(
+		GithubAPIBaseURL + "/repos/" + ghClient.username + "/" + repo + "/languages",
+	)
+	if err != nil {
+		return RepoLanguages{}, err
+	}
+
+	var languages RepoLanguages
+	err = json.Unmarshal(body, &languages)
+	if err != nil {
+		return RepoLanguages{}, err
+	}
+
+	return languages, nil
+}
+
 // Fetches list of public repositories for a user.
 // See: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-a-user
-func (ghClient GithubClient) GetPublicReposList() ([]RepoAPIResponse, error) {
+func (ghClient GithubClient) GetPublicReposList() ([]RawPublicRepo, error) {
 	body, err := ghClient.makeRequest(GithubAPIBaseURL + "/users/" + ghClient.username + "/repos")
 	if err != nil {
 		return nil, err
 	}
 
-	var rawPublicRepos []RepoAPIResponse
+	var rawPublicRepos []RawPublicRepo
 	err = json.Unmarshal(body, &rawPublicRepos)
 	if err != nil {
 		return nil, err
@@ -99,8 +115,7 @@ func (ghClient GithubClient) GetPublicReposList() ([]RepoAPIResponse, error) {
 }
 
 // Fetches list of public repositories and enriches with language data for each
-// repository. See:
-// https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repository-languages
+// repository.
 func (ghClient GithubClient) GetPublicReposWithLanguages() ([]Repo, error) {
 	rawRepos, err := ghClient.GetPublicReposList()
 	if err != nil {

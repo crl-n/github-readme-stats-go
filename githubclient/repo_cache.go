@@ -43,7 +43,7 @@ func RetrieveCachedRepos() []Repo {
 	return repos
 }
 
-func findRepo(repos []Repo, target RepoAPIResponse) (*Repo, bool) {
+func findRepo(repos []Repo, target RawPublicRepo) (*Repo, bool) {
 	for _, repo := range repos {
 		if repo.Name == target.Name {
 			logger.Debugf("Cache hit for %v\n", target.Name)
