@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-
-	"github.com/crl-n/github-readme-stats-go/logger"
 )
 
 const repoCacheFilename = "cached_repos.json"
@@ -46,10 +44,8 @@ func RetrieveCachedRepos() []Repo {
 func findRepo(repos []Repo, target RawPublicRepo) (*Repo, bool) {
 	for _, repo := range repos {
 		if repo.Name == target.Name {
-			logger.Debugf("Cache hit for %v\n", target.Name)
 			return &repo, true
 		}
 	}
-	logger.Debugf("Cache miss for %v\n", target.Name)
 	return nil, false
 }

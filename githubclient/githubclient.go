@@ -134,10 +134,10 @@ func (ghClient GithubClient) GetPublicReposWithLanguages() ([]Repo, error) {
 		cachedRepo, found := findRepo(cachedRepos, rawRepo)
 
 		if found && cachedRepo.PushedAt.Equal(rawRepoPushedAtTime) {
-			logger.Debugf("Using cached repo data for %v\n", rawRepo.Name)
+			logger.Debugf("Cache hit for '%v', using cached repo data\n", rawRepo.Name)
 			repos = append(repos, *cachedRepo)
 		} else {
-			logger.Debugf("Using new repo data for %v\n", rawRepo.Name)
+			logger.Debugf("Cache miss for '%v', fetching language data\n", rawRepo.Name)
 			repo, err := rawRepo.ToRepo(ghClient)
 			if err != nil {
 				return nil, err
