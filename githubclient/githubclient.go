@@ -2,6 +2,7 @@ package githubclient
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -29,6 +30,16 @@ func (ghClient GithubClient) makeRequest(url string) ([]byte, error) {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != 200 {
+		return nil, fmt.Errorf(
+			fmt.Sprintf(
+				"Request by GithubClient to '%s' failed with status %s",
+				url,
+				resp.Status,
+			),
+		)
 	}
 
 	return body, nil
