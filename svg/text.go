@@ -16,6 +16,7 @@ type Text struct {
 	X       string   `xml:"x,attr"`
 	Y       string   `xml:"y,attr"`
 	Content string   `xml:",innerxml"`
+	Class   string   `xml:"class,attr"`
 }
 
 func NewText(params TextParams) *Text {
@@ -24,4 +25,8 @@ func NewText(params TextParams) *Text {
 		Y:       strconv.Itoa(params.Y),
 		Content: params.Content,
 	}
+}
+
+func (t *Text) SetClass(class string) {
+	t.Class = class
 }
