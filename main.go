@@ -56,8 +56,6 @@ func main() {
 
 	switch os.Args[1] {
 	case "lang":
-		gen := svg.SVGGenerator{}
-
 		repos, err := service.GetPublicReposWithLanguages()
 		if err != nil {
 			logger.Errorf("Error encountered while retrieving repositories: %v\n", err)
@@ -70,7 +68,8 @@ func main() {
 			logger.Infof("%v %v %v\n", stat.Language, stat.BytesOfCode, stat.Percentage)
 		}
 
-		gen.GenerateLangStatsCard(languageStats)
+		langStatsCard := svg.NewLanguageStatsCard(languageStats)
+		langStatsCard.GenerateSVGFile()
 	case "gh":
 		repos, err := service.GetPublicReposWithLanguages()
 		if err != nil {

@@ -7,7 +7,9 @@ import (
 	"github.com/crl-n/github-readme-stats-go/stats"
 )
 
-type SVGGenerator struct{}
+type LanguageStatsCard struct {
+	stats stats.LanguageStats
+}
 
 const (
 	cardWidth    = 300
@@ -19,6 +21,10 @@ const (
 	numberOfLangs = 6
 	rowGap        = 35
 )
+
+func NewLanguageStatsCard(langStats stats.LanguageStats) LanguageStatsCard {
+	return LanguageStatsCard{langStats}
+}
 
 func addStyles(svg *SVG) {
 	styleElement := Style{Content: fmt.Sprintf(`text { font: 400 %s "Segoe UI", sans-serif }`, langFontSize)}
@@ -46,7 +52,7 @@ func addLanguageRows(svg *SVG, langStats stats.LanguageStats) {
 	}
 }
 
-func (gen *SVGGenerator) GenerateLangStatsCard(langStats stats.LanguageStats) {
+func (card *LanguageStatsCard) GenerateSVGFile() {
 	svg := &SVG{
 		Width:    fmt.Sprint(cardWidth),
 		Height:   fmt.Sprint(cardHeight),
@@ -55,7 +61,7 @@ func (gen *SVGGenerator) GenerateLangStatsCard(langStats stats.LanguageStats) {
 
 	addStyles(svg)
 	addCardBackground(svg)
-	addLanguageRows(svg, langStats)
+	addLanguageRows(svg, card.stats)
 
 	svg.WriteToFile("langs.svg")
 }
