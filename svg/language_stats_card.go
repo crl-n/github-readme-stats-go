@@ -11,18 +11,20 @@ type LanguageStatsCard struct {
 }
 
 const (
-	cardWidth       = 300
-	cardHeight      = 285
-	cardBgColor     = "#ffffff"
-	cardBorderColor = "#e4e2e2"
-	paddingX        = 24
-	paddingTop      = 24
-	langFontSize    = "11px"
-	langFontWeight  = 400
-	langRowGap      = 150
-	font            = "\"Segoe UI\", sans-serif"
-	numberOfLangs   = 6
-	rowGap          = 35
+	cardWidth               = 300
+	cardHeight              = 285
+	cardBgColor             = "#ffffff"
+	cardBorderColor         = "#e4e2e2"
+	font                    = "\"Segoe UI\", sans-serif"
+	langFontSize            = "11px"
+	langFontWeight          = 400
+	gapBetweenLangAndStat   = 150
+	gapBetweenLangRows      = 35
+	gapBetweenTitleAndLangs = 50
+	numberOfLangs           = 6
+	paddingX                = 24
+	paddingTop              = 24
+	title                   = "Most Used Languages"
 )
 
 func NewLanguageStatsCard(langStats stats.LanguageStats) LanguageStatsCard {
@@ -51,19 +53,24 @@ func addCardBackground(svg *SVG) {
 	svg.AppendElement(bgRect)
 }
 
+func addTitle(svg *SVG) {
+	titleText := NewText(TextParams{paddingX, paddingTop, title})
+	svg.AppendElement(titleText)
+}
+
 func addLanguageRows(svg *SVG, langStats stats.LanguageStats) {
 	topLangs := langStats.Top(numberOfLangs)
 
 	for i, stat := range topLangs {
 		g := NewGroup()
 
-		y := i*rowGap + paddingTop
+		y := i*gapBetweenLangRows + paddingTop + gapBetweenTitleAndLangs
 
 		langName := NewText(TextParams{paddingX, y, stat.Language})
 		g.AppendElement(langName)
 
 		langStat := NewText(TextParams{
-			paddingX + langRowGap,
+			paddingX + gapBetweenLangAndStat,
 			y,
 			fmt.Sprintf("%.2f %%", stat.Percentage),
 		})
@@ -82,6 +89,7 @@ func (card *LanguageStatsCard) GenerateSVGFile() {
 
 	addStyles(svg)
 	addCardBackground(svg)
+	addTitle(svg)
 	addLanguageRows(svg, card.stats)
 
 	svg.WriteToFile("langs.svg")
