@@ -2,7 +2,6 @@ package svg
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/crl-n/github-readme-stats-go/stats"
 )
@@ -12,14 +11,18 @@ type LanguageStatsCard struct {
 }
 
 const (
-	cardWidth    = 300
-	cardHeight   = 285
-	paddingX     = 24
-	paddingTop   = 24
-	langFontSize = "11px"
-	// titleFontSize = "18px"
-	numberOfLangs = 6
-	rowGap        = 35
+	cardWidth       = 300
+	cardHeight      = 285
+	cardBgColor     = "#ffffff"
+	cardBorderColor = "#e4e2e2"
+	paddingX        = 24
+	paddingTop      = 24
+	langFontSize    = "11px"
+	langFontWeight  = 400
+	langRowGap      = 150
+	font            = "\"Segoe UI\", sans-serif"
+	numberOfLangs   = 6
+	rowGap          = 35
 )
 
 func NewLanguageStatsCard(langStats stats.LanguageStats) LanguageStatsCard {
@@ -27,28 +30,46 @@ func NewLanguageStatsCard(langStats stats.LanguageStats) LanguageStatsCard {
 }
 
 func addStyles(svg *SVG) {
-	styleElement := Style{Content: fmt.Sprintf(`text { font: 400 %s "Segoe UI", sans-serif }`, langFontSize)}
-	svg.Elements = append(svg.Elements, styleElement)
+	styleElement := Style{}
+	styleElement.AppendContent(
+		fmt.Sprintf(
+			`text { font: %d %s %s }`, langFontWeight, langFontSize, font,
+		),
+	)
+	svg.AppendElement(styleElement)
 }
 
 func addCardBackground(svg *SVG) {
-	bgRect := Rect{Width: fmt.Sprint(cardWidth), Height: fmt.Sprint(cardHeight), Fill: "white", Rx: "4", Ry: "4", Stroke: "#e4e2e2"}
-	svg.Elements = append(svg.Elements, bgRect)
+	bgRect := NewRect(RectParams{
+		Width:  cardWidth,
+		Height: cardHeight,
+		Fill:   cardBgColor,
+		Rx:     4,
+		Ry:     4,
+		Stroke: cardBorderColor,
+	})
+	svg.AppendElement(bgRect)
 }
 
 func addLanguageRows(svg *SVG, langStats stats.LanguageStats) {
 	topLangs := langStats.Top(numberOfLangs)
 
 	for i, stat := range topLangs {
-		g := &Group{
-			Elements: []interface{}{},
-		}
+		g := NewGroup()
 
 		y := i*rowGap + paddingTop
 
-		g.Elements = append(g.Elements, Text{X: strconv.Itoa(paddingX), Y: strconv.Itoa(y), Content: stat.Language})
-		g.Elements = append(g.Elements, Text{X: strconv.Itoa(paddingX + 150), Y: strconv.Itoa(y), Content: fmt.Sprintf("%.2f %%", stat.Percentage)})
-		svg.Elements = append(svg.Elements, g)
+		langName := NewText(TextParams{paddingX, y, stat.Language})
+		g.AppendElement(langName)
+
+		langStat := NewText(TextParams{
+			paddingX + langRowGap,
+			y,
+			fmt.Sprintf("%.2f %%", stat.Percentage),
+		})
+		g.AppendElement(langStat)
+
+		svg.AppendElement(g)
 	}
 }
 
