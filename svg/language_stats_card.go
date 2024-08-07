@@ -24,6 +24,8 @@ const (
 	numberOfLangs           = 6
 	paddingX                = 24
 	paddingTop              = 36
+	progressBarHeight       = 8
+	progressBarWidth        = 252
 	title                   = "Most Used Languages"
 	titleFontColor          = "#5FA6EE"
 	titleFontSize           = "22px"
@@ -98,6 +100,15 @@ func addLanguageRows(svg *SVG, langStats stats.LanguageStats) {
 		g.AppendElement(langStat)
 
 		svg.AppendElement(g)
+
+		progressBar := NewProgressBar(
+			stat.Percentage,
+			paddingX,
+			y+(gapBetweenLangRows/2)-progressBarHeight,
+			progressBarHeight,
+			progressBarWidth,
+		)
+		svg.AppendElement(progressBar.ToElementGroup())
 	}
 }
 

@@ -11,6 +11,8 @@ type RectParams struct {
 	Fill   string
 	Rx     int
 	Ry     int
+	X      int
+	Y      int
 	Stroke string
 }
 
@@ -22,6 +24,8 @@ type Rect struct {
 	Fill    string   `xml:"fill,attr"`
 	Rx      string   `xml:"rx,attr"`
 	Ry      string   `xml:"ry,attr"`
+	X       string   `xml:"x,attr"`
+	Y       string   `xml:"y,attr"`
 	Stroke  string   `xml:"stroke,attr"`
 }
 
@@ -32,6 +36,8 @@ func NewRect(params RectParams) *Rect {
 		Fill:   params.Fill,
 		Rx:     fmt.Sprint(params.Rx),
 		Ry:     fmt.Sprint(params.Ry),
+		X:      fmt.Sprint(params.X),
+		Y:      fmt.Sprint(params.Y),
 		Stroke: params.Stroke,
 	}
 	return r
