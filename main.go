@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/crl-n/github-readme-stats-go/cards"
 	"github.com/crl-n/github-readme-stats-go/github"
 	"github.com/crl-n/github-readme-stats-go/logger"
 	"github.com/crl-n/github-readme-stats-go/stats"
-	"github.com/crl-n/github-readme-stats-go/svg"
 )
 
 const (
@@ -68,7 +68,7 @@ func main() {
 			logger.Infof("%v %v %v\n", stat.Language, stat.BytesOfCode, stat.Percentage)
 		}
 
-		langStatsCard := svg.NewLanguageStatsCard(languageStats)
+		langStatsCard := cards.NewLanguageStatsCard(languageStats)
 		langStatsCard.GenerateSVGFile()
 	case "gh":
 		repos, err := service.GetPublicReposWithLanguages()

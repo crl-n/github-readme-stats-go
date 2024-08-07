@@ -1,13 +1,14 @@
-package svg
+package cards
 
 import (
 	"fmt"
 
-	"github.com/crl-n/github-readme-stats-go/stats"
+	. "github.com/crl-n/github-readme-stats-go/stats"
+	. "github.com/crl-n/github-readme-stats-go/svg"
 )
 
 type LanguageStatsCard struct {
-	stats stats.LanguageStats
+	stats LanguageStats
 }
 
 const (
@@ -32,7 +33,7 @@ const (
 	titleFontWeight         = 700
 )
 
-func NewLanguageStatsCard(langStats stats.LanguageStats) LanguageStatsCard {
+func NewLanguageStatsCard(langStats LanguageStats) LanguageStatsCard {
 	return LanguageStatsCard{langStats}
 }
 
@@ -74,12 +75,16 @@ func addCardBackground(svg *SVG) {
 }
 
 func addTitle(svg *SVG) {
-	titleText := NewText(TextParams{paddingX, paddingTop, title})
+	titleText := NewText(TextParams{
+		X:       paddingX,
+		Y:       paddingTop,
+		Content: title,
+	})
 	titleText.SetClass("title-text")
 	svg.AppendElement(titleText)
 }
 
-func addLanguageRows(svg *SVG, langStats stats.LanguageStats) {
+func addLanguageRows(svg *SVG, langStats LanguageStats) {
 	topLangs := langStats.Top(numberOfLangs)
 
 	for i, stat := range topLangs {
@@ -87,14 +92,18 @@ func addLanguageRows(svg *SVG, langStats stats.LanguageStats) {
 
 		y := i*gapBetweenLangRows + paddingTop + gapBetweenTitleAndLangs
 
-		langName := NewText(TextParams{paddingX, y, stat.Language})
+		langName := NewText(TextParams{
+			X:       paddingX,
+			Y:       y,
+			Content: stat.Language,
+		})
 		langName.SetClass("language-text")
 		g.AppendElement(langName)
 
 		langStat := NewText(TextParams{
-			paddingX + gapBetweenLangAndStat,
-			y,
-			fmt.Sprintf("%.2f %%", stat.Percentage),
+			X:       paddingX + gapBetweenLangAndStat,
+			Y:       y,
+			Content: fmt.Sprintf("%.2f %%", stat.Percentage),
 		})
 		langStat.SetClass("language-text")
 		g.AppendElement(langStat)
