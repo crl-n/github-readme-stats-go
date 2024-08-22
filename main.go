@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	githubHandleEnvVar = "GITHUB_HANDLE"
+	githubHandleEnvVar    = "GITHUB_HANDLE"
+	githubAuthTokenEnvVar = "GITHUB_AUTH_TOKEN"
 )
 
 func usage() {
@@ -41,8 +42,22 @@ func getHandle() string {
 		usedValue = envValue
 	}
 
-	logger.Infof("Using Github handle '%s'\n", usedValue)
+	logger.Infof("Using target Github handle '%s'\n", usedValue)
 	return usedValue
+}
+
+func getAuthToken() string {
+	envValue := os.Getenv(githubAuthTokenEnvVar)
+
+	if envValue == "" {
+		logger.Infof(
+			"No Github auth token provided. Requests to GitHub API will "+
+				"be unauthenticated, which limits requests per hour. To "+
+				"authenticate set environment variable '%s'\n", githubAuthTokenEnvVar,
+		)
+	}
+
+	return envValue
 }
 
 func main() {
@@ -51,8 +66,9 @@ func main() {
 		return
 	}
 
+	authToken := getAuthToken()
 	githubHandle := getHandle()
-	service := github.NewGithubService()
+	service := github.NewGithubService(authToken)
 
 	switch os.Args[1] {
 	case "lang":

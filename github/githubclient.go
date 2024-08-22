@@ -6,11 +6,15 @@ import (
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/crl-n/github-readme-stats-go/logger"
 )
 
 const GithubAPIBaseURL = "https://api.github.com"
 
-type GithubClient struct {}
+type GithubClient struct {
+	authToken string
+}
 
 // Keys are language names, values are number of bytes of code written
 type RepoLanguages map[string]int
@@ -22,17 +26,38 @@ type Repo struct {
 	PushedAt  time.Time
 }
 
-func NewGithubClient() GithubClient {
+func NewUnauthenticatedGithubClient() GithubClient {
+	logger.Infof("Github client running in mode: unauthenticated\n")
 	return GithubClient{}
 }
 
+func NewAuthenticatedGithubClient(authToken string) GithubClient {
+	logger.Infof("Github client running in mode: authenticated\n")
+	return GithubClient{authToken}
+}
+
+func (ghClient GithubClient) isAuthenticated() bool {
+	return ghClient.authToken != ""
+}
+
 func (ghClient GithubClient) makeRequest(urlPath string) ([]byte, error) {
-	resp, err := http.Get(GithubAPIBaseURL + urlPath)
+	req, err := http.NewRequest("GET", GithubAPIBaseURL+urlPath, nil)
 	if err != nil {
 		return nil, err
 	}
 
+	if ghClient.isAuthenticated() {
+		req.Header.Set("Authorization", "Bearer "+ghClient.authToken)
+		req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
 	defer resp.Body.Close()
+
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err

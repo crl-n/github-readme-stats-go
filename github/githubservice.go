@@ -10,8 +10,11 @@ type GithubService struct {
 	ghClient GithubClient
 }
 
-func NewGithubService() GithubService {
-	return GithubService{NewGithubClient()}
+func NewGithubService(authToken string) GithubService {
+	if authToken == "" {
+		return GithubService{NewUnauthenticatedGithubClient()}
+	}
+	return GithubService{NewAuthenticatedGithubClient(authToken)}
 }
 
 // Fetches list of public repositories and enriches with language data for each
