@@ -52,11 +52,11 @@ func main() {
 	}
 
 	githubHandle := getHandle()
-	service := github.NewGithubService(githubHandle)
+	service := github.NewGithubService()
 
 	switch os.Args[1] {
 	case "lang":
-		repos, err := service.GetPublicReposWithLanguages()
+		repos, err := service.GetPublicReposWithLanguages(githubHandle)
 		if err != nil {
 			logger.Errorf("Error encountered while retrieving repositories: %v\n", err)
 			return
@@ -71,7 +71,7 @@ func main() {
 		langStatsCard := cards.NewLanguageStatsCard(languageStats)
 		langStatsCard.GenerateSVGFile()
 	case "gh":
-		repos, err := service.GetPublicReposWithLanguages()
+		repos, err := service.GetPublicReposWithLanguages(githubHandle)
 		if err != nil {
 			logger.Errorf("Error encountered while retrieving repositories: %v\n", err)
 			return

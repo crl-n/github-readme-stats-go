@@ -10,8 +10,8 @@ type RawPublicRepo struct {
 }
 
 // Enriches raw public repo with language data
-func (rawRepo RawPublicRepo) ToRepo(ghClient GithubClient) (Repo, error) {
-	repoLanguages, err := ghClient.GetRepoLanguages(rawRepo.Name)
+func (rawRepo RawPublicRepo) ToRepo(ghClient GithubClient, username string) (Repo, error) {
+	repoLanguages, err := ghClient.GetRepoLanguages(username, rawRepo.Name)
 	if err != nil {
 		return Repo{}, err
 	}

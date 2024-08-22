@@ -10,9 +10,7 @@ import (
 
 const GithubAPIBaseURL = "https://api.github.com"
 
-type GithubClient struct {
-	username string
-}
+type GithubClient struct {}
 
 // Keys are language names, values are number of bytes of code written
 type RepoLanguages map[string]int
@@ -24,8 +22,8 @@ type Repo struct {
 	PushedAt  time.Time
 }
 
-func NewGithubClient(username string) GithubClient {
-	return GithubClient{username}
+func NewGithubClient() GithubClient {
+	return GithubClient{}
 }
 
 func (ghClient GithubClient) makeRequest(urlPath string) ([]byte, error) {
@@ -55,9 +53,9 @@ func (ghClient GithubClient) makeRequest(urlPath string) ([]byte, error) {
 
 // Fetches languages used in a repository. See:
 // https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repository-languages
-func (ghClient GithubClient) GetRepoLanguages(repo string) (RepoLanguages, error) {
+func (ghClient GithubClient) GetRepoLanguages(username string, repo string) (RepoLanguages, error) {
 	body, err := ghClient.makeRequest(
-		"/repos/" + ghClient.username + "/" + repo + "/languages",
+		"/repos/" + username + "/" + repo + "/languages",
 	)
 	if err != nil {
 		return RepoLanguages{}, err
@@ -74,8 +72,8 @@ func (ghClient GithubClient) GetRepoLanguages(repo string) (RepoLanguages, error
 
 // Fetches list of public repositories for a user.
 // See: https://docs.github.com/en/rest/repos/repos?apiVersion=2022-11-28#list-repositories-for-a-user
-func (ghClient GithubClient) GetPublicReposList() ([]RawPublicRepo, error) {
-	body, err := ghClient.makeRequest("/users/" + ghClient.username + "/repos")
+func (ghClient GithubClient) GetPublicReposList(username string) ([]RawPublicRepo, error) {
+	body, err := ghClient.makeRequest("/users/" + username + "/repos")
 	if err != nil {
 		return nil, err
 	}

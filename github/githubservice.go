@@ -7,18 +7,17 @@ import (
 )
 
 type GithubService struct {
-	username string
 	ghClient GithubClient
 }
 
-func NewGithubService(username string) GithubService {
-	return GithubService{username, NewGithubClient(username)}
+func NewGithubService() GithubService {
+	return GithubService{NewGithubClient()}
 }
 
 // Fetches list of public repositories and enriches with language data for each
 // repository.
-func (repoService GithubService) GetPublicReposWithLanguages() ([]Repo, error) {
-	rawRepos, err := repoService.ghClient.GetPublicReposList()
+func (repoService GithubService) GetPublicReposWithLanguages(githubHandle string) ([]Repo, error) {
+	rawRepos, err := repoService.ghClient.GetPublicReposList(githubHandle)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +38,7 @@ func (repoService GithubService) GetPublicReposWithLanguages() ([]Repo, error) {
 			repos = append(repos, *cachedRepo)
 		} else {
 			logger.Debugf("Cache miss for '%v', fetching language data\n", rawRepo.Name)
-			repo, err := rawRepo.ToRepo(repoService.ghClient)
+			repo, err := rawRepo.ToRepo(repoService.ghClient, githubHandle)
 			if err != nil {
 				return nil, err
 			}
