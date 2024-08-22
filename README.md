@@ -21,6 +21,12 @@ export GITHUB_USERNAME=crl-n
 ./github-readme-stats-go lang
 ```
 
+## GitHub API Authentication
+You may choose to authenticate to the GitHub API. This allows for more requests per hour. To do this, set `GITHUB_AUTH_TOKEN` environment variable.
+```
+export GITHUB_AUTH_TOKEN=my-token
+```
+
 ## Logging
 Log level is configurable by the LOG_LEVEL environment variable. Available log levels:
 ```
