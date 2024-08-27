@@ -34,11 +34,6 @@ func (app *CLI) HandleLang() {
 	}
 
 	languageStats := stats.NewLanguageStats(repos)
-
-	for _, stat := range languageStats {
-		logger.Infof("%v %v %v\n", stat.Language, stat.BytesOfCode, stat.Percentage)
-	}
-
 	langStatsCard := cards.NewLanguageStatsCard(languageStats)
 	langStatsCard.GenerateSVGFile()
 }

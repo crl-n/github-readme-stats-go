@@ -5,6 +5,7 @@ import (
 
 	. "github.com/crl-n/github-readme-stats-go/internal/stats"
 	. "github.com/crl-n/github-readme-stats-go/internal/svg"
+	"github.com/crl-n/github-readme-stats-go/pkg/logger"
 )
 
 type LanguageStatsCard struct {
@@ -23,6 +24,7 @@ const (
 	gapBetweenLangRows      = 30
 	gapBetweenTitleAndLangs = 35
 	numberOfLangs           = 6
+	outputFileName          = "langs.svg"
 	paddingX                = 24
 	paddingTop              = 36
 	progressBarHeight       = 8
@@ -133,5 +135,6 @@ func (card *LanguageStatsCard) GenerateSVGFile() {
 	addTitle(svg)
 	addLanguageRows(svg, card.stats)
 
-	svg.WriteToFile("langs.svg")
+	svg.WriteToFile(outputFileName)
+	logger.Infof("Top languages file '%v' generated succesfully.\n", outputFileName)
 }
