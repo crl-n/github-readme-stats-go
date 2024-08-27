@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/crl-n/github-readme-stats-go/cards"
-	"github.com/crl-n/github-readme-stats-go/github"
-	"github.com/crl-n/github-readme-stats-go/logger"
-	"github.com/crl-n/github-readme-stats-go/stats"
+	"github.com/crl-n/github-readme-stats-go/internal/cards"
+	"github.com/crl-n/github-readme-stats-go/internal/github"
+	"github.com/crl-n/github-readme-stats-go/internal/stats"
+	"github.com/crl-n/github-readme-stats-go/pkg/logger"
 )
 
 const (

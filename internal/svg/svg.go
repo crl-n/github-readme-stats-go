@@ -4,7 +4,7 @@ import (
 	"encoding/xml"
 	"os"
 
-	"github.com/crl-n/github-readme-stats-go/logger"
+	"github.com/crl-n/github-readme-stats-go/pkg/logger"
 )
 
 type SVG struct {

@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/crl-n/github-readme-stats-go/logger"
+	"github.com/crl-n/github-readme-stats-go/pkg/logger"
 )
 
 const GithubAPIBaseURL = "https://api.github.com"

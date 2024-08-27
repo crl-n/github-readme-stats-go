@@ -8,22 +8,30 @@ At this point the project is not set up to work exactly like github-readme-stats
 
 I hope you enjoy the project!
 
-## Use
-Build the project using `go build`. Use compiled binary to generate SVG card with stats of a Github user:
+## CLI
+
+### Build
+To build the CLI use command:
+```sh
+go build -o bin/cli cmd/cli/main.go
 ```
-./github-readme-stats-go lang crl-n
+
+### Usage
+After building, use compiled binary to generate SVG card with stats of a Github user:
+```sh
+./bin/cli lang crl-n
 ```
 This will generate a langs.svg file that contains the top languages used in all public repositories of the user.
 
 The github user can also be specified with an environment variable, in which case username argument can be omitted:
-```
+```sh
 export GITHUB_USERNAME=crl-n
-./github-readme-stats-go lang
+./bin/cli lang
 ```
 
-## GitHub API Authentication
+### GitHub API Authentication
 You may choose to authenticate to the GitHub API. This allows for more requests per hour. To do this, set `GITHUB_AUTH_TOKEN` environment variable.
-```
+```sh
 export GITHUB_AUTH_TOKEN=my-token
 ```
 

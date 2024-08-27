@@ -3,7 +3,7 @@ package stats
 import (
 	"sort"
 
-	"github.com/crl-n/github-readme-stats-go/github"
+	"github.com/crl-n/github-readme-stats-go/internal/github"
 )
 
 // LanguageStat represents statistics for a programming language in a user's repositories.

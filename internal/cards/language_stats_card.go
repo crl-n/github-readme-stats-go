@@ -3,8 +3,8 @@ package cards
 import (
 	"fmt"
 
-	. "github.com/crl-n/github-readme-stats-go/stats"
-	. "github.com/crl-n/github-readme-stats-go/svg"
+	. "github.com/crl-n/github-readme-stats-go/internal/stats"
+	. "github.com/crl-n/github-readme-stats-go/internal/svg"
 )
 
 type LanguageStatsCard struct {
