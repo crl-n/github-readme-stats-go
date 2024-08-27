@@ -4,9 +4,26 @@ Inspired by [Anurag Hazra's github-readme-stats](https://github.com/anuraghazra/
 
 I was curious how github-readme-stats was able to show dynamic content in the static context of a Github README. If you're curious about how this works I recommend reading [Bohdan Liashenko's blog post about it](https://codecrumbs.io/library/github-readme-stats). This project is my attempt at achieving the same (or something similar) using Go with **zero dependencies**. Most of all this project is my outlet for learning Go on the side of my real work.
 
-At this point the project is not set up to work exactly like github-readme-stats does, as it is early in development. There is no server yet as I opted to develop the core functionality as a CLI. The plan is to turn it into a server that can be self-hosted once the core functionality is implemented.
+There are two build targets that may be compiled: a HTTP-server and a CLI. The server is the main build target intended for production use. The CLI is intended for development use only. The CLI makes it easy to test the core functionality (SVG-generation etc.) without the need of making HTTP requests.
+
+At this point the project is not set up to work exactly like github-readme-stats does. I've opted to target VM/container compute instead of the serverless approach used by Hazra. I also chose to implement only the top languages card for now. My reasoning is that I want to achieve one fully functioning card before considering implementing additional cards.
 
 I hope you enjoy the project!
+
+## Server
+
+### Build
+To build the server use command:
+```sh
+go build -o bin/server cmd/server/main.go
+```
+
+### Usage
+To start the server use command:
+```sh
+./bin/server
+```
+The server should start listening for incoming requests on port 8080.
 
 ## CLI
 
