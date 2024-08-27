@@ -2,8 +2,9 @@ package github
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
+
+	"github.com/crl-n/github-readme-stats-go/pkg/logger"
 )
 
 const repoCacheFilename = "cached_repos.json"
@@ -11,7 +12,7 @@ const repoCacheFilename = "cached_repos.json"
 func CacheRepos(repos []Repo) {
 	file, err := os.Create(repoCacheFilename)
 	if err != nil {
-		fmt.Println("Unable to create " + repoCacheFilename)
+		logger.Errorf("Error creating file '%s': %s\n", repoCacheFilename, err)
 		return
 	}
 	defer file.Close()
@@ -19,14 +20,18 @@ func CacheRepos(repos []Repo) {
 	encoder := json.NewEncoder(file)
 	err = encoder.Encode(repos)
 	if err != nil {
-		fmt.Println(err)
+		logger.Errorf("%v\n", err)
 	}
 }
 
 func RetrieveCachedRepos() []Repo {
 	file, err := os.Open(repoCacheFilename)
 	if err != nil {
-		fmt.Println("Unable to open " + repoCacheFilename)
+		if os.IsNotExist(err) {
+			logger.Infof("Cached repos file '%s' not found. No cached repo data will be used.\n", repoCacheFilename)
+		} else {
+			logger.Errorf("Error opening file '%s': %s\n", repoCacheFilename, err)
+		}
 		return nil
 	}
 
@@ -34,9 +39,11 @@ func RetrieveCachedRepos() []Repo {
 	decoder := json.NewDecoder(file)
 	err = decoder.Decode(&repos)
 	if err != nil {
-		fmt.Println(err)
+		logger.Errorf("%v\n", err)
 		return nil
 	}
+
+	logger.Infof("Cached repos file '%s' found. Cached repo data will be used where possible.\n", repoCacheFilename)
 
 	return repos
 }
