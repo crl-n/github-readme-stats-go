@@ -1,6 +1,7 @@
 package github
 
 import (
+	"fmt"
 	"time"
 
 	. "github.com/crl-n/github-readme-stats-go/pkg/cache"
@@ -12,18 +13,18 @@ type GithubService struct {
 	repoCache *Cache[string, Repo]
 }
 
-const repoCacheFilename = "cached_repos.json"
+const pubRepoCacheFilename = "cached_public_repos.json"
 
 func NewGithubService(authToken string) *GithubService {
 	if authToken == "" {
 		return &GithubService{
 			NewUnauthenticatedGithubClient(),
-			NewCache[string, Repo](repoCacheFilename),
+			NewCache[string, Repo](pubRepoCacheFilename),
 		}
 	}
 	return &GithubService{
 		NewAuthenticatedGithubClient(authToken),
-		NewCache[string, Repo](repoCacheFilename),
+		NewCache[string, Repo](pubRepoCacheFilename),
 	}
 }
 
@@ -58,6 +59,12 @@ func (repoService GithubService) GetPublicReposWithLanguages(githubHandle string
 		}
 	}
 
+	repoService.CachePublicReposData(githubHandle, repos)
+
+	return repos, nil
+}
+
+func (repoService GithubService) CachePublicReposData(githubHandle string, repos []Repo) {
 	var kvPairs []struct {
 		Key   string
 		Value Repo
@@ -68,12 +75,10 @@ func (repoService GithubService) GetPublicReposWithLanguages(githubHandle string
 			Key   string
 			Value Repo
 		}{
-			Key:   repo.Name,
+			Key:   fmt.Sprintf("%s/%s", githubHandle, repo.Name),
 			Value: repo,
 		})
 	}
 
 	repoService.repoCache.BulkSet(kvPairs)
-
-	return repos, nil
 }
