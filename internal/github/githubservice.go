@@ -44,7 +44,8 @@ func (repoService GithubService) GetPublicReposWithLanguages(githubHandle string
 			return nil, err
 		}
 
-		cachedRepo, found := repoService.repoCache.Get(rawRepo.Name)
+		cacheKey := fmt.Sprintf("%s/%s", githubHandle, rawRepo.Name)
+		cachedRepo, found := repoService.repoCache.Get(cacheKey)
 
 		if found && cachedRepo.PushedAt.Equal(rawRepoPushedAtTime) {
 			logger.Debugf("Cache hit for '%v', using cached repo data\n", rawRepo.Name)
